@@ -1,0 +1,14 @@
+.sidebar__container {
+  background-color: white;
+  width: 300px;
+  height: 100vh;
+  border-right: 1px solid grey;
+  /* position: fixed; */
+  /* left: 0; */
+}
+
+.sidebar__row {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 8px;
+}

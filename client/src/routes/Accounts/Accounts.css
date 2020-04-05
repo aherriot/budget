@@ -1,0 +1,7 @@
+.accounts_container {
+  width: 100%;
+}
+
+.accounts__content {
+  display: flex;
+}

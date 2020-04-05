@@ -1,0 +1,20 @@
+{
+  "development": {
+    "user": "budget",
+    "password": "budget",
+    "database": "budget",
+    "host": "127.0.0.1"
+  },
+  "test": {
+    "user": "budget_test",
+    "password": "budget_test",
+    "database": "budget_test",
+    "host": "127.0.0.1"
+  },
+  "production": {
+    "user": "",
+    "password": "",
+    "database": "",
+    "host": "127.0.0.1"
+  }
+}

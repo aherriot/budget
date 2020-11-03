@@ -1,23 +1,24 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import accountsViewSlice from "./slice";
-import accounts, { fetchAccounts } from "store/accounts";
+import accounts, { fetchAccounts, updateAccount } from "store/accounts";
 
 import Sidebar from "../Sidebar";
 
 export default connect(
-  state => ({
+  (state) => ({
     accountsView: state.routes.accounts,
-    accounts: state.data.accounts
+    accounts: state.data.accounts,
   }),
-  dispatch => ({
+  (dispatch) => ({
     actions: bindActionCreators(
       {
         ...accountsViewSlice.actions,
         ...accounts.actions,
-        fetchAccounts
+        fetchAccounts,
+        updateAccount,
       },
       dispatch
-    )
+    ),
   })
 )(Sidebar);

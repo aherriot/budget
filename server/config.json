@@ -1,0 +1,24 @@
+{
+  "jwtSecret": "replace me",
+  "jwtExpiry": 604800,
+  "database": {
+    "development": {
+      "user": "fitness",
+      "password": "fitness",
+      "database": "fitness",
+      "host": "127.0.0.1"
+    },
+    "test": {
+      "user": "fitness_test",
+      "password": "fitness_test",
+      "database": "fitness_test",
+      "host": "127.0.0.1"
+    },
+    "production": {
+      "user": "fitness",
+      "password": "",
+      "database": "fitness",
+      "host": "127.0.0.1"
+    }
+  }
+}

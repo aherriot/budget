@@ -1,11 +1,11 @@
 function buildAccountTree(parentId, accountsById) {
   const children = [];
-  Object.values(accountsById).forEach(account => {
-    if (account.parent_id === parentId) {
+  Object.values(accountsById).forEach((account) => {
+    if (account.parentId === parentId) {
       children.push({
-        title: <TreeRow account={account} />,
+        // title: <TreeRow account={account} />,
         key: account.id,
-        children: buildAccountTree(account.id, accountsById)
+        children: buildAccountTree(account.id, accountsById),
       });
     }
   });

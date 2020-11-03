@@ -1,12 +1,14 @@
 import React from "react";
 // import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import "./Header.css";
 
-const Header = props => {
+const Header = (props) => {
   return (
     <div className="header__container">
-      <h2>Budget</h2>
-      {/* <a href="#">aherriot</a> */}
+      <Link to="/">
+        <h2>Budget</h2>
+      </Link>
     </div>
   );
 };

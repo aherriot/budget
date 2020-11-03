@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-// import recordError from "utils/recordError";
 
-export default (url, defaultData = null) => {
+const useApi = (url, defaultData = null) => {
   const [data, setData] = useState(defaultData);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,3 +51,5 @@ export default (url, defaultData = null) => {
 
   return [data, isLoading, error];
 };
+
+export default useApi;

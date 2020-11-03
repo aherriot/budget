@@ -16,7 +16,7 @@ const Tabs = ({ accounts, transactions, accountsView, actions }) => {
     }
   };
 
-  const onSelectAccount = key => {
+  const onSelectAccount = (key) => {
     actions.selectAccount({ id: key });
   };
 
@@ -30,7 +30,7 @@ const Tabs = ({ accounts, transactions, accountsView, actions }) => {
         onEdit={onEdit}
         onChange={onSelectAccount}
       >
-        {accountsView.openTabs.map(tab => (
+        {accountsView.openTabs.map((tab) => (
           <AntDTabs.TabPane
             tab={accounts.byId[tab.id]?.name}
             key={tab.id}

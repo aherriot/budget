@@ -3,21 +3,21 @@ import PropTypes from "prop-types";
 
 import { Tree, Button, DatePicker } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 import moment from "moment";
 
-import { Link } from "react-router-dom";
 import TreeRow from "./TreeRow";
 
 import "./Sidebar.css";
 
 function buildTreeBranch(parentId, accountsById) {
   const children = [];
-  Object.values(accountsById).forEach(account => {
-    if (account.parent_id === parentId) {
+  Object.values(accountsById).forEach((account) => {
+    if (account.parentId === parentId) {
       children.push({
         title: <TreeRow account={account} />,
         key: account.id,
-        children: buildTreeBranch(account.id, accountsById)
+        children: buildTreeBranch(account.id, accountsById),
       });
     }
   });
@@ -26,8 +26,11 @@ function buildTreeBranch(parentId, accountsById) {
 
 const Sidebar = ({ accounts, accountsView, actions }) => {
   useEffect(() => {
-    actions.fetchAccounts();
-  }, [actions]);
+    actions.fetchAccounts({
+      fromDate: accountsView.dateRange[0],
+      toDate: accountsView.dateRange[1],
+    });
+  }, [actions, accountsView]);
 
   const treeData = buildTreeBranch(null, accounts.byId);
 
@@ -39,22 +42,39 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
     actions.selectDateRange(dateStrings);
   };
 
+  const onDrop = (info) => {
+    const account = accounts.byId[info.dragNode.key];
+    let parentId;
+    if (info.dropToGap) {
+      const target = accounts.byId[info.node.key];
+      parentId = target.parentId;
+    } else {
+      parentId = info.node.key;
+    }
+    actions.updateAccount({
+      account,
+      parentId,
+    });
+  };
+
   return (
     <div className="sidebar__container">
       <h2>Accounts</h2>
       <DatePicker.RangePicker
         picker="month"
-        value={accountsView.dateRange.map(val => moment(val))}
+        value={accountsView.dateRange.map((val) => moment(val))}
         onChange={onSelectDateRange}
       />
       <Tree
         treeData={treeData}
-        // expandedKeys={accounts.data.map(account => account.id)}
-        defaultExpandAll
+        autoExpandParent
+        expandedKeys={Object.keys(accounts.byId)}
         blockNode
         showLine
         selectedKeys={[accountsView.activeTabId]}
         onSelect={onSelectAccount}
+        draggable
+        onDrop={onDrop}
       />
       <Button icon={<PlusOutlined />}>Add Account</Button>
       <Link to="/bulk-import">
@@ -65,7 +85,7 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
 };
 
 Sidebar.propTypes = {
-  accounts: PropTypes.object.isRequired
+  accounts: PropTypes.object.isRequired,
 };
 
 export default Sidebar;

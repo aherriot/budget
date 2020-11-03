@@ -6,11 +6,14 @@ const accounts = createSlice({
   initialState: {
     openTabs: [],
     activeTabId: null,
-    dateRange: [new Date().toISOString(), new Date().toISOString()]
+    dateRange: [
+      moment().startOf("year").format("YYYY-MM-DD"),
+      moment().format("YYYY-MM-DD"),
+    ],
   },
   reducers: {
     selectAccount: (state, action) => {
-      const tab = state.openTabs.find(tab => tab.id === action.payload.id);
+      const tab = state.openTabs.find((tab) => tab.id === action.payload.id);
 
       if (!tab) {
         state.openTabs.push({ id: action.payload.id });
@@ -22,8 +25,7 @@ const accounts = createSlice({
       state.dateRange = action.payload;
     },
     removeTab: (state, action) => {
-      const tabIndex = state.openTabs.findIndex(tab => {
-        console.log(tab.id, action.payload.id);
+      const tabIndex = state.openTabs.findIndex((tab) => {
         return tab.id === action.payload.id;
       });
 
@@ -34,8 +36,8 @@ const accounts = createSlice({
       if (state.activeTabId === action.payload.id) {
         state.activeTabId = null;
       }
-    }
-  }
+    },
+  },
 });
 
 export default accounts;

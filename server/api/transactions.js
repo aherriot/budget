@@ -1,5 +1,7 @@
+const fs = require("fs");
 const Router = require("express-promise-router");
 const db = require("../db");
+const transactionsQuery = fs.readFileSync("api/transactions.sql").toString();
 
 const router = Router();
 
@@ -22,7 +24,7 @@ router.post("/bulk", async (req, res) => {
 
     res
       .status(200)
-      .json({ data: results.map(r => convertDbRecordToResult(r.rows[0])) });
+      .json({ data: results.map((r) => convertDbRecordToResult(r.rows[0])) });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ message: "Unable to insert records" });
@@ -31,15 +33,9 @@ router.post("/bulk", async (req, res) => {
 
 router.post("/search", async (req, res) => {
   try {
-    const result = await db.query(
-      `
-    select * from transactions
-    where in_account = $1 
-    or out_account = $1;`,
-      [req.body.accountId]
-    );
+    const result = await db.query(transactionsQuery, [1, req.body.accountId]);
     return res.send({
-      data: result.rows.map(convertDbRecordToResult)
+      data: result.rows.map(convertDbRecordToResult),
     });
   } catch (e) {
     return res.status(500).json();
@@ -47,7 +43,7 @@ router.post("/search", async (req, res) => {
   }
 });
 
-const insertTransaction = transaction => {
+const insertTransaction = (transaction) => {
   return db.query(
     `insert into transactions 
     (amount, description, out_account, out_date, in_account, in_date )
@@ -60,12 +56,12 @@ const insertTransaction = transaction => {
       transaction.outAccount,
       transaction.outDate,
       transaction.inAccount,
-      transaction.inDate
+      transaction.inDate,
     ]
   );
 };
 
-const convertDbRecordToResult = row => ({
+const convertDbRecordToResult = (row) => ({
   id: row.id.toString(),
   amount: row.amount,
   description: row.description,
@@ -74,7 +70,7 @@ const convertDbRecordToResult = row => ({
   inDate: row.in_date,
   inAccount: row.in_account.toString(),
   createdAt: row.created_at,
-  updatedAt: row.updated_at
+  updatedAt: row.updated_at,
 });
 
 module.exports = router;

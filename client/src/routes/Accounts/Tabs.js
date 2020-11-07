@@ -20,8 +20,13 @@ const Tabs = ({ accounts, transactions, accountsView, actions }) => {
     actions.selectAccount({ id: key });
   };
 
+  if (accounts.loading) {
+    return null;
+  }
+
   return (
     <div className="tabs__container">
+      {accountsView.openTabs.length === 0 && <p>Select a tab on the left.</p>}
       <AntDTabs
         activeKey={accountsView.activeTabId}
         animated={false}
@@ -38,6 +43,7 @@ const Tabs = ({ accounts, transactions, accountsView, actions }) => {
           >
             {accountsView.activeTabId === tab.id && (
               <TabContent
+                actions={actions}
                 accountId={tab.id}
                 accounts={accounts}
                 transactions={transactions}

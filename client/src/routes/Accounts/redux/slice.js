@@ -8,7 +8,7 @@ const accounts = createSlice({
     activeTabId: null,
     dateRange: [
       moment().startOf("year").format("YYYY-MM-DD"),
-      moment().format("YYYY-MM-DD"),
+      moment().endOf("year").format("YYYY-MM-DD"),
     ],
   },
   reducers: {

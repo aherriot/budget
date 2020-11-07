@@ -9,6 +9,7 @@ import AddTransactionDialog from "./AddTransactionDialog";
 
 import "./TabContent.css";
 const TabContent = ({
+  actions,
   accountId,
   accounts,
   transactions,
@@ -34,6 +35,7 @@ const TabContent = ({
       </div>
       {selectedView === "table" && (
         <TransactionsTable
+          actions={actions}
           accountId={accountId}
           accounts={accounts}
           transactions={transactions}

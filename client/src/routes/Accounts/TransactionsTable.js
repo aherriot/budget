@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import moment from "moment";
+import AddTransactionRow from "./AddTransactionRow";
 
 const TransactionsTable = ({
+  actions,
   accounts,
   transactions,
   onSelectAccount,
@@ -14,7 +16,7 @@ const TransactionsTable = ({
       <Table
         size="small"
         pagination={false}
-        key="id"
+        rowKey="id"
         columns={[
           {
             title: "Date",
@@ -58,15 +60,37 @@ const TransactionsTable = ({
             key: "amount",
             render: (val) => "$" + (val / 100).toFixed(2),
           },
+          {
+            title: "Actions",
+            key: "actions",
+            dataIndex: "id",
+            render: (val) => (
+              <div>
+                <Button
+                  type="link"
+                  onClick={() => {
+                    actions.deleteTransaction(val);
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            ),
+          },
         ]}
         dataSource={transactions.data}
-      ></Table>
+      />
+      <AddTransactionRow
+        accounts={accounts}
+        actions={actions}
+        activeTabId={activeTabId}
+      />
     </div>
   );
 };
 
 TransactionsTable.propTypes = {
-  acccounts: PropTypes.object.isRequired,
+  acccounts: PropTypes.object,
   transactions: PropTypes.object.isRequired,
   onSelectAccount: PropTypes.func.isRequired,
   activeTabId: PropTypes.string.isRequired,

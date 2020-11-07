@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import request from "utils/request";
+import { fetchAccounts } from "./accounts";
 
 const fetchTransactions = createAsyncThunk(
   "transactions/fetchTransactions",
   async (accountId, thunkAPI) => {
     const response = await request("/api/transactions/search", "POST", {
-      accountId
+      accountId,
     });
     return response.data;
   }
@@ -15,8 +16,9 @@ const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
   async (transaction, thunkAPI) => {
     const response = await request("/api/transactions/", "POST", {
-      transaction
+      transaction,
     });
+    thunkAPI.dispatch(fetchAccounts());
     return response.data;
   }
 );
@@ -25,7 +27,7 @@ const addTransactionsBulk = createAsyncThunk(
   "transactions/addTransactionsBulk",
   async (data, thunkAPI) => {
     const response = await request("/api/transactions/bulk", "POST", {
-      data
+      data,
     });
     return response.data;
   }
@@ -38,9 +40,10 @@ const updateTransaction = createAsyncThunk(
       `/api/transactions/${transaction.id}`,
       "PUT",
       {
-        transaction
+        transaction,
       }
     );
+    thunkAPI.dispatch(fetchAccounts());
     return response.data;
   }
 );
@@ -52,6 +55,7 @@ const deleteTransaction = createAsyncThunk(
       `/api/transactions/${transactionId}`,
       "DELETE"
     );
+    thunkAPI.dispatch(fetchAccounts());
     return response.data;
   }
 );
@@ -61,7 +65,7 @@ const transactions = createSlice({
   initialState: {
     data: [],
     loading: false,
-    error: null
+    error: null,
   },
   reducers: {},
   extraReducers: {
@@ -75,8 +79,8 @@ const transactions = createSlice({
     },
     [fetchTransactions.rejected]: (state, action) => {
       state.error = action.error;
-    }
-  }
+    },
+  },
 });
 
 export default transactions;
@@ -85,5 +89,5 @@ export {
   addTransaction,
   addTransactionsBulk,
   updateTransaction,
-  deleteTransaction
+  deleteTransaction,
 };

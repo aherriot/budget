@@ -60,6 +60,7 @@ const BulkImport = ({ actions, accounts }) => {
         onChange={(val) => {
           setValue("targetAccountId", val[val.length - 1]);
         }}
+        changeOnSelect
       />
       <Button type="primary" htmlType="submit">
         Submit
@@ -136,7 +137,3 @@ BulkImport.propTypes = {};
 
 export default BulkImport;
 
-/*
-
-
-*/

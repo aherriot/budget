@@ -34,8 +34,10 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
 
   const treeData = buildTreeBranch(null, accounts.byId);
 
-  const onSelectAccount = (selectedKeys, e) => {
-    actions.selectAccount({ id: selectedKeys[0] });
+  const onSelectAccount = (selectedKeys, { selected }) => {
+    if (selected) {
+        actions.selectAccount({ id: selectedKeys[0] });
+    }
   };
 
   const onSelectDateRange = (dates, dateStrings) => {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Tree, Button, DatePicker } from "antd";
@@ -9,6 +9,7 @@ import moment from "moment";
 import TreeRow from "./TreeRow";
 
 import "./Sidebar.css";
+import AddAccountModal from "./AddAccountModal";
 
 function buildTreeBranch(parentId, accountsById) {
   const children = [];
@@ -25,6 +26,8 @@ function buildTreeBranch(parentId, accountsById) {
 }
 
 const Sidebar = ({ accounts, accountsView, actions }) => {
+  const [addAccountModalOpen, setAddAccountModalOpen] = useState(false);
+
   useEffect(() => {
     actions.fetchAccounts({
       fromDate: accountsView.dateRange[0],
@@ -81,10 +84,21 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
         draggable
         onDrop={onDrop}
       />
-      <Button icon={<PlusOutlined />}>Add Account</Button>
+      <Button
+        icon={<PlusOutlined />}
+        onClick={() => setAddAccountModalOpen(true)}
+      >
+        Add Account
+      </Button>
       <Link to="/bulk-import">
         <Button icon={<UploadOutlined />}>Import Transactions</Button>
       </Link>
+      <AddAccountModal
+        open={addAccountModalOpen}
+        onClose={() => setAddAccountModalOpen(false)}
+        accounts={accounts}
+        actions={actions}
+      />
     </div>
   );
 };

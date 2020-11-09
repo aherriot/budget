@@ -1,7 +1,11 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import accountsViewSlice from "./slice";
-import accounts, { fetchAccounts, updateAccount } from "store/accounts";
+import accounts, {
+  fetchAccounts,
+  updateAccount,
+  addAccount,
+} from "store/accounts";
 
 import Sidebar from "../Sidebar";
 
@@ -17,6 +21,7 @@ export default connect(
         ...accounts.actions,
         fetchAccounts,
         updateAccount,
+        addAccount,
       },
       dispatch
     ),

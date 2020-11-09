@@ -35,6 +35,19 @@ const updateAccount = createAsyncThunk(
   }
 );
 
+const addAccount = createAsyncThunk(
+  "transactions/addAccount",
+  async ({ parentId, type, name }, thunkAPI) => {
+    const response = await request(`/api/accounts`, "POST", {
+      parentId,
+      type,
+      name,
+    });
+    thunkAPI.dispatch(fetchAccounts());
+    return response.data;
+  }
+);
+
 const accounts = createSlice({
   name: "accounts",
   initialState: {
@@ -63,4 +76,4 @@ const accounts = createSlice({
 });
 
 export default accounts;
-export { fetchAccounts, updateAccount };
+export { fetchAccounts, updateAccount, addAccount };

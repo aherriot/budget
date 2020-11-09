@@ -56,7 +56,7 @@ accounts_tree_totals as (
         accounts_tree_sums.in_total,
         accounts_tree_sums.out_total
     from accounts_tree_sums
-    union all
+    union
     select accounts_tree_sums.id,
         accounts_tree_sums.parent_id,
         accounts_tree_sums.name,
@@ -74,8 +74,10 @@ select accounts_tree_totals.id,
     sum(accounts_tree_totals.out_total) as out_total,
     sum(
         case
-            when accounts_tree_totals.type in ('EXPENSE', 'LIABILITY') then coalesce(accounts_tree_totals.in_total, 0) - coalesce(accounts_tree_totals.out_total, 0)
-            else - coalesce(accounts_tree_totals.in_total, 0) + coalesce(accounts_tree_totals.out_total, 0)
+            -- when accounts_tree_totals.type in ('INCOME') then 0
+            -- when accounts_tree_totals.type in ('EXPENSE', 'LIABILITY') then 0
+            when 1 = 2 then 0
+            else coalesce(accounts_tree_totals.in_total, 0) - coalesce(accounts_tree_totals.out_total, 0)
         end
     ) as total
 from accounts_tree_totals

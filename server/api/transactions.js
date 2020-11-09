@@ -108,6 +108,8 @@ const insertTransaction = (transaction) => {
 const convertDbRecordToResult = (row) => ({
   id: row.id.toString(),
   amount: row.amount,
+  outAmount: row.out_amount,
+  inAmount: row.in_amount,
   description: row.description,
   outDate: row.out_date,
   outAccount: row.out_account.toString(),

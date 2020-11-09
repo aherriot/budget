@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Input, DatePicker, Button } from "antd";
 import moment from "moment";
 import { useForm, Controller } from "react-hook-form";
 import AccountPicker from "components/AccountPicker";
 
 const AddTransactionRow = ({ accounts, actions, activeTabId }) => {
-  const { handleSubmit, errors, formState, control } = useForm();
+  const { handleSubmit, control } = useForm();
 
   const onSubmit = ({ date, inAccount, outAccount, description, amount }) => {
     const transaction = {

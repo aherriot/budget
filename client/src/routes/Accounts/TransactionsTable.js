@@ -55,26 +55,31 @@ const TransactionsTable = ({
             key: "description",
           },
           {
-            title: "Amount",
-            dataIndex: "amount",
-            key: "amount",
-            render: (val) => "$" + (val / 100).toFixed(2),
+            title: "Out",
+            dataIndex: "outAmount",
+            key: "outAmount",
+            render: (val) => (val == null ? "" : "$" + (val / 100).toFixed(2)),
+          },
+          {
+            title: "In",
+            dataIndex: "inAmount",
+            key: "inAmount",
+            render: (val) => (val == null ? "" : "$" + (val / 100).toFixed(2)),
           },
           {
             title: "Actions",
             key: "actions",
             dataIndex: "id",
             render: (val) => (
-              <div>
-                <Button
-                  type="link"
-                  onClick={() => {
-                    actions.deleteTransaction(val);
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
+              <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  actions.deleteTransaction(val);
+                }}
+              >
+                Delete
+              </Button>
             ),
           },
         ]}

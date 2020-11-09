@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-// import PropTypes from "prop-types";
-import { Radio, Button } from "antd";
+import { Radio, Button, Space } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
 import TransactionsTable from "./TransactionsTable";
@@ -21,17 +20,31 @@ const TabContent = ({
   return (
     <div>
       <div className="TabContent--actions">
-        <Radio.Group
-          value={selectedView}
-          onChange={(e) => setSelectedView(e.target.value)}
-          buttonStyle="solid"
-        >
-          <Radio.Button value="table">Table</Radio.Button>
-          <Radio.Button value="chart">Chart</Radio.Button>
-        </Radio.Group>
-        <Button icon={<PlusOutlined />} onClick={() => setOpenDialog(true)}>
-          Add Transaction
-        </Button>
+        <div>
+          <Radio.Group
+            value={selectedView}
+            onChange={(e) => setSelectedView(e.target.value)}
+            buttonStyle="solid"
+          >
+            <Radio.Button value="table">Table</Radio.Button>
+            <Radio.Button value="chart">Chart</Radio.Button>
+          </Radio.Group>
+        </div>
+        <Space>
+          <span>Type: {accounts.byId[accountId].type}</span>
+          <span>
+            Total: $
+            {(
+              transactions.data.reduce(
+                (acc, val) => acc + val.inAmount - val.outAmount,
+                0
+              ) / 100
+            ).toFixed(2)}
+          </span>
+          <Button icon={<PlusOutlined />} onClick={() => setOpenDialog(true)}>
+            Add Transaction
+          </Button>
+        </Space>
       </div>
       {selectedView === "table" && (
         <TransactionsTable

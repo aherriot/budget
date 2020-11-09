@@ -30,13 +30,13 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
       fromDate: accountsView.dateRange[0],
       toDate: accountsView.dateRange[1],
     });
-  }, [actions, accountsView]);
+  }, [actions, accountsView.dateRange]);
 
   const treeData = buildTreeBranch(null, accounts.byId);
 
   const onSelectAccount = (selectedKeys, { selected }) => {
     if (selected) {
-        actions.selectAccount({ id: selectedKeys[0] });
+      actions.selectAccount({ id: selectedKeys[0] });
     }
   };
 

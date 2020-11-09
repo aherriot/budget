@@ -25,7 +25,6 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    console.log(transaction);
     const result = await insertTransaction(transaction);
     return res
       .status(200)
@@ -54,7 +53,12 @@ router.post("/bulk", async (req, res) => {
 
 router.post("/search", async (req, res) => {
   try {
-    const result = await db.query(transactionsQuery, [1, req.body.accountId]);
+    const result = await db.query(transactionsQuery, [
+      1,
+      req.body.accountId,
+      req.body.fromDate,
+      req.body.toDate,
+    ]);
     return res.json({
       data: result.rows.map(convertDbRecordToResult),
     });

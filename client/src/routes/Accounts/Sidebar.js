@@ -41,7 +41,10 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
   };
 
   const onSelectDateRange = (dates, dateStrings) => {
-    actions.selectDateRange(dateStrings);
+    actions.selectDateRange([
+      dates[0].format("YYYY-MM-DD"),
+      dates[1].endOf("month").format("YYYY-MM-DD"),
+    ]);
   };
 
   const onDrop = (info) => {

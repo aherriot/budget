@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Radio, Button, Space } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Radio, Space } from "antd";
 
 import TransactionsTable from "./TransactionsTable";
 import TransactionsChart from "./TransactionsChart";
@@ -31,9 +30,11 @@ const TabContent = ({
           </Radio.Group>
         </div>
         <Space>
-          <span>Type: {accounts.byId[accountId].type}</span>
           <span>
-            Total: $
+            <b>Type:</b> {accounts.byId[accountId].type}
+          </span>
+          <span>
+            <b>Total:</b> $
             {(
               transactions.data.reduce(
                 (acc, val) => acc + val.inAmount - val.outAmount,
@@ -41,9 +42,6 @@ const TabContent = ({
               ) / 100
             ).toFixed(2)}
           </span>
-          <Button icon={<PlusOutlined />} onClick={() => setOpenDialog(true)}>
-            Add Transaction
-          </Button>
         </Space>
       </div>
       {selectedView === "table" && (

@@ -4,9 +4,21 @@ import { fetchAccounts } from "./accounts";
 
 const fetchTransactions = createAsyncThunk(
   "transactions/fetchTransactions",
-  async (accountId, thunkAPI) => {
+  async (args, thunkAPI) => {
+    let fromDate, toDate, accountId;
+    if (args) {
+      accountId = args.accountId;
+      fromDate = args.fromDate;
+      toDate = args.toDate;
+    } else {
+      accountId = thunkAPI.getState().data.transactions.parameters.accountId;
+      fromDate = thunkAPI.getState().data.transactions.parameters.fromDate;
+      toDate = thunkAPI.getState().data.transactions.parameters.toDate;
+    }
     const response = await request("/api/transactions/search", "POST", {
       accountId,
+      fromDate: new Date(fromDate),
+      toDate: new Date(toDate),
     });
     return response.data;
   }
@@ -70,6 +82,9 @@ const transactions = createSlice({
   reducers: {},
   extraReducers: {
     [fetchTransactions.pending]: (state, action) => {
+      if (action.meta.arg) {
+        state.parameters = action.meta.arg;
+      }
       state.loading = true;
     },
     [fetchTransactions.fulfilled]: (state, action) => {

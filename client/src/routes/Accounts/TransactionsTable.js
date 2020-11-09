@@ -70,6 +70,7 @@ const TransactionsTable = ({
             title: "Actions",
             key: "actions",
             dataIndex: "id",
+            fixed: "right",
             render: (val) => (
               <Button
                 type="link"

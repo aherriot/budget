@@ -6,8 +6,12 @@ import TabContent from "./TabContent";
 
 const Tabs = ({ accounts, transactions, accountsView, actions }) => {
   useEffect(() => {
-    actions.fetchTransactions(accountsView.activeTabId);
-  }, [actions, accountsView.activeTabId]);
+    actions.fetchTransactions({
+      accountId: accountsView.activeTabId,
+      fromDate: accountsView.dateRange[0],
+      toDate: accountsView.dateRange[1],
+    });
+  }, [actions, accountsView.activeTabId, accountsView.dateRange]);
 
   const onEdit = (targetKey, action) => {
     // add/remove

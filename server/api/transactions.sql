@@ -24,12 +24,16 @@ account_transactions as (
         out_t.amount as out_amount
     from accounts_tree at
         inner join transactions out_t on out_t.out_account = at.id
+        and out_t.out_date >= $3
+        and out_t.out_date <= $4
     union
     select in_t.id,
         in_t.amount as in_amount,
         null as out_amount
     from accounts_tree at
         inner join transactions in_t on in_t.in_account = at.id
+        and in_t.out_date >= $3
+        and in_t.out_date <= $4
 ),
 -- group the transactions back together by transaction id
 -- if in_amount and out_amount both have values,
@@ -43,6 +47,7 @@ merged_transactions as (
 ) -- finally join in the remaining transaction details
 -- since they can't be apart of the aggregation above
 select mt.*,
+    t.description,
     t.in_date,
     t.out_date,
     t.in_account,

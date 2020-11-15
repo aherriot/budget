@@ -32,8 +32,8 @@ account_transactions as (
         null as out_amount
     from accounts_tree at
         inner join transactions in_t on in_t.in_account = at.id
-        and in_t.out_date >= $3
-        and in_t.out_date <= $4
+        and in_t.in_date >= $3
+        and in_t.in_date <= $4
 ),
 -- group the transactions back together by transaction id
 -- if in_amount and out_amount both have values,

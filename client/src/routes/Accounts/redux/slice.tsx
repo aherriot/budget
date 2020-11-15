@@ -1,16 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 import moment from "moment";
 
+interface Tab {
+  id: string;
+}
+
+interface AccountsRouteState {
+  openTabs: Tab[];
+  activeTabId: string | null;
+  dateRange: [string, string];
+}
+
+const initialState: AccountsRouteState = {
+  openTabs: [],
+  activeTabId: null,
+  dateRange: [
+    moment().startOf("year").format("YYYY-MM-DD"),
+    moment().endOf("year").format("YYYY-MM-DD"),
+  ],
+};
+
 const accounts = createSlice({
   name: "accountsRoute",
-  initialState: {
-    openTabs: [],
-    activeTabId: null,
-    dateRange: [
-      moment().startOf("year").format("YYYY-MM-DD"),
-      moment().endOf("year").format("YYYY-MM-DD"),
-    ],
-  },
+  initialState,
   reducers: {
     selectAccount: (state, action) => {
       const tab = state.openTabs.find((tab) => tab.id === action.payload.id);
@@ -41,3 +53,5 @@ const accounts = createSlice({
 });
 
 export default accounts;
+const actions = accounts.actions;
+export { actions };

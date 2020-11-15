@@ -1,27 +1,35 @@
 import React, { useEffect } from "react";
-// import PropTypes from 'prop-types'
 import { Tabs as AntDTabs } from "antd";
-import "./Tabs.css";
+import { useDispatch, useSelector } from "react-redux";
+import actions from "store/actions";
+import { actions as viewActions } from "./redux/slice";
 import TabContent from "./TabContent";
+import "./Tabs.css";
 
-const Tabs = ({ accounts, transactions, accountsView, actions }) => {
+const Tabs = () => {
+  const dispatch = useDispatch();
+  const accounts = useSelector((state) => state.data.accounts);
+  const accountsView = useSelector((state) => state.routes.accounts);
+
   useEffect(() => {
-    actions.fetchTransactions({
-      accountId: accountsView.activeTabId,
-      fromDate: accountsView.dateRange[0],
-      toDate: accountsView.dateRange[1],
-    });
-  }, [actions, accountsView.activeTabId, accountsView.dateRange]);
+    dispatch(
+      actions.fetchTransactions({
+        accountId: accountsView.activeTabId as string,
+        fromDate: accountsView.dateRange[0],
+        toDate: accountsView.dateRange[1],
+      })
+    );
+  }, [dispatch, accountsView.activeTabId, accountsView.dateRange]);
 
-  const onEdit = (targetKey, action) => {
+  const onEdit = (targetKey: any, action: any) => {
     // add/remove
     if (action === "remove") {
-      actions.removeTab({ id: targetKey });
+      dispatch(viewActions.removeTab({ id: targetKey }));
     }
   };
 
-  const onSelectAccount = (key) => {
-    actions.selectAccount({ id: key });
+  const onSelectAccount = (key: string) => {
+    dispatch(viewActions.selectAccount({ id: key }));
   };
 
   if (accounts.loading) {
@@ -32,7 +40,7 @@ const Tabs = ({ accounts, transactions, accountsView, actions }) => {
     <div className="tabs__container">
       {accountsView.openTabs.length === 0 && <p>Select a tab on the left.</p>}
       <AntDTabs
-        activeKey={accountsView.activeTabId}
+        activeKey={accountsView.activeTabId as string}
         animated={false}
         type="editable-card"
         hideAdd
@@ -47,11 +55,7 @@ const Tabs = ({ accounts, transactions, accountsView, actions }) => {
           >
             {accountsView.activeTabId === tab.id && (
               <TabContent
-                actions={actions}
                 accountId={tab.id}
-                accounts={accounts}
-                transactions={transactions}
-                accountsView={accountsView}
                 onSelectAccount={onSelectAccount}
               />
             )}
@@ -61,7 +65,5 @@ const Tabs = ({ accounts, transactions, accountsView, actions }) => {
     </div>
   );
 };
-
-Tabs.propTypes = {};
 
 export default Tabs;

@@ -1,16 +1,20 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Table } from "antd";
 import moment from "moment";
+import actions from "store/actions";
 import AddTransactionRow from "./AddTransactionRow";
 
-const TransactionsTable = ({
-  actions,
-  accounts,
-  transactions,
-  onSelectAccount,
-  activeTabId,
-}) => {
+interface Props {
+  accountId: string;
+  onSelectAccount: (id: string) => void;
+}
+
+const TransactionsTable = ({ accountId, onSelectAccount }: Props) => {
+  const dispatch = useDispatch();
+  const accounts = useSelector((state) => state.data.accounts);
+  const transactions = useSelector((state) => state.data.transactions);
+
   return (
     <div>
       <Table
@@ -22,7 +26,7 @@ const TransactionsTable = ({
             title: "Date",
             key: "date",
             render: (row) => {
-              if (row.inAccountId === activeTabId) {
+              if (row.inAccountId === accountId) {
                 return moment(row.inDate).format("YYYY-MM-DD");
               } else {
                 return moment(row.outDate).format("YYYY-MM-DD");
@@ -76,7 +80,7 @@ const TransactionsTable = ({
                 type="link"
                 size="small"
                 onClick={() => {
-                  actions.deleteTransaction(val);
+                  dispatch(actions.deleteTransaction(val));
                 }}
               >
                 Delete
@@ -86,20 +90,9 @@ const TransactionsTable = ({
         ]}
         dataSource={transactions.data}
       />
-      <AddTransactionRow
-        accounts={accounts}
-        actions={actions}
-        activeTabId={activeTabId}
-      />
+      <AddTransactionRow />
     </div>
   );
-};
-
-TransactionsTable.propTypes = {
-  acccounts: PropTypes.object,
-  transactions: PropTypes.object.isRequired,
-  onSelectAccount: PropTypes.func.isRequired,
-  activeTabId: PropTypes.string.isRequired,
 };
 
 export default TransactionsTable;

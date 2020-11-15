@@ -66,6 +66,22 @@ router.patch("/:accountId", async (req, res) => {
   return res.status(400).json({ message: "no change" });
 });
 
+router.post("/", async (req, res) => {
+  try {
+    const result = await db.query(
+      `
+    insert into accounts 
+    (parent_id, type, user_id, name) 
+    values ($1, $2, $3, $4)
+    returning *;`,
+      [req.body.parentId, req.body.type, 1, req.body.name]
+    );
+    return res.json({ data: convertDbRecordToResult(result.rows[0]) });
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+});
+
 router.post("/tree", async (req, res) => {
   try {
     const result = await db.query(accountsTreeQuery, [

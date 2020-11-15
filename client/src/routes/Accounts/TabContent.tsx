@@ -1,19 +1,23 @@
 import React, { useState } from "react";
 import { Radio, Space } from "antd";
-
+import { useSelector } from "react-redux";
 import TransactionsTable from "./TransactionsTable";
 import TransactionsChart from "./TransactionsChart";
 import AddTransactionDialog from "./AddTransactionDialog";
 
 import "./TabContent.css";
-const TabContent = ({
-  actions,
-  accountId,
-  accounts,
-  transactions,
-  accountsView,
-  onSelectAccount,
-}) => {
+
+interface Props {
+  accountId: string;
+  onSelectAccount: (key: string) => void;
+}
+
+const TabContent = ({ accountId, onSelectAccount }: Props) => {
+  // const dispatch = useDispatch();
+  // const accountsView = useSelector((state) => state.routes.accounts);
+  const accounts = useSelector((state) => state.data.accounts);
+  const transactions = useSelector((state) => state.data.transactions);
+
   const [selectedView, setSelectedView] = useState("table");
   const [openDialog, setOpenDialog] = useState(false);
   return (
@@ -46,21 +50,11 @@ const TabContent = ({
       </div>
       {selectedView === "table" && (
         <TransactionsTable
-          actions={actions}
           accountId={accountId}
-          accounts={accounts}
-          transactions={transactions}
           onSelectAccount={onSelectAccount}
-          activeTabId={accountsView.activeTabId}
         />
       )}
-      {selectedView === "chart" && (
-        <TransactionsChart
-          accountId={accountId}
-          accounts={accounts}
-          transactions={transactions}
-        />
-      )}
+      {selectedView === "chart" && <TransactionsChart accountId={accountId} />}
       <AddTransactionDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -68,7 +62,5 @@ const TabContent = ({
     </div>
   );
 };
-
-TabContent.propTypes = {};
 
 export default TabContent;

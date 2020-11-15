@@ -1,6 +1,11 @@
 import React from "react";
 import { Modal } from "antd";
-function AddTransactionDialog({ open, onClose }) {
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+function AddTransactionDialog({ open, onClose }: Props) {
   return (
     <Modal
       title="Add Transaction"

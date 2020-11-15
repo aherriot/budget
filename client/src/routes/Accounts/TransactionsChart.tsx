@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo } from "react";
-import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import Chart from "chart.js";
 
-const TransactionsChart = ({
-  accounts,
-  transactions,
-  onSelectAccount,
-  activeTabId,
-}) => {
-  const distinctMonths = useMemo(() => new Set(), []);
+interface Props {
+  accountId: string;
+  // onSelectAccount: (id: string) => void;
+}
+
+const TransactionsChart = ({ accountId }: Props) => {
+  // const dispatch = useDispatch();
+  const transactions = useSelector((state) => state.data.transactions);
+
+  const distinctMonths = useMemo(() => new Set<string>(), []);
   transactions.data.forEach((row) => {
     const date = new Date(row.inDate);
     const yearMonth =
@@ -17,7 +20,7 @@ const TransactionsChart = ({
   });
 
   useEffect(() => {
-    const chartContext = document.getElementById("chart");
+    const chartContext = document.getElementById("chart") as HTMLCanvasElement;
     new Chart(chartContext, {
       type: "bar",
       data: {
@@ -48,13 +51,6 @@ const TransactionsChart = ({
       <canvas id="chart" />
     </div>
   );
-};
-
-TransactionsChart.propTypes = {
-  acccounts: PropTypes.object.isRequired,
-  transactions: PropTypes.object.isRequired,
-  onSelectAccount: PropTypes.func.isRequired,
-  activeTabId: PropTypes.string.isRequired,
 };
 
 export default TransactionsChart;

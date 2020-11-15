@@ -1,13 +1,31 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Input, DatePicker, Button } from "antd";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { useForm, Controller } from "react-hook-form";
-import AccountPicker from "components/AccountPicker";
 
-const AddTransactionRow = ({ accounts, actions, activeTabId }) => {
-  const { handleSubmit, control } = useForm();
+import actions from "store/actions";
+import { renderAccountPicker } from "components/AccountPicker";
 
-  const onSubmit = ({ date, inAccount, outAccount, description, amount }) => {
+interface FormValues {
+  date: Moment;
+  inAccount: string[];
+  outAccount: string[];
+  description: string;
+  amount: string;
+}
+
+const AddTransactionRow = () => {
+  const dispatch = useDispatch();
+  const { handleSubmit, control } = useForm<FormValues>();
+
+  const onSubmit = ({
+    date,
+    inAccount,
+    outAccount,
+    description,
+    amount,
+  }: FormValues) => {
     const transaction = {
       inDate: date.format("YYYY-MM-DD"),
       outDate: date.format("YYYY-MM-DD"),
@@ -16,7 +34,7 @@ const AddTransactionRow = ({ accounts, actions, activeTabId }) => {
       description,
       amount: parseInt(amount, 10),
     };
-    actions.addTransaction(transaction);
+    dispatch(actions.addTransaction(transaction));
   };
 
   return (
@@ -37,8 +55,7 @@ const AddTransactionRow = ({ accounts, actions, activeTabId }) => {
               <Controller
                 control={control}
                 name="outAccount"
-                as={AccountPicker}
-                accounts={accounts}
+                render={renderAccountPicker}
                 rules={{ required: true }}
               />
             </td>
@@ -46,8 +63,7 @@ const AddTransactionRow = ({ accounts, actions, activeTabId }) => {
               <Controller
                 control={control}
                 name="inAccount"
-                as={AccountPicker}
-                accounts={accounts}
+                render={renderAccountPicker}
                 rules={{ required: true }}
               />
             </td>
@@ -80,12 +96,3 @@ const AddTransactionRow = ({ accounts, actions, activeTabId }) => {
 };
 
 export default AddTransactionRow;
-
-// <
-//   defaultValue={moment()}
-//   onChange={(val) => {
-//     setValue("date", val);
-//   }}
-// />
-
-//

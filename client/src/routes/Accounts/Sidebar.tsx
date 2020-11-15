@@ -1,18 +1,28 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-
+import React, { useState, useEffect, ReactNode } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Tree, Button, DatePicker } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
 import moment from "moment";
-
+import actions from "store/actions";
+import { Account } from "store/accounts";
 import TreeRow from "./TreeRow";
+import { actions as viewActions } from "./redux/slice";
 
 import "./Sidebar.css";
 import AddAccountModal from "./AddAccountModal";
 
-function buildTreeBranch(parentId, accountsById) {
-  const children = [];
+type TreeNode = {
+  title: ReactNode;
+  key: string;
+  children: TreeNode[];
+};
+
+function buildTreeBranch(
+  parentId: string | null,
+  accountsById: Record<string, Account>
+) {
+  const children: TreeNode[] = [];
   Object.values(accountsById).forEach((account) => {
     if (account.parentId === parentId) {
       children.push({
@@ -25,32 +35,53 @@ function buildTreeBranch(parentId, accountsById) {
   return children;
 }
 
-const Sidebar = ({ accounts, accountsView, actions }) => {
+// interface Props {
+
+// }
+
+const Sidebar = () => {
+  const accounts = useSelector((state) => state.data.accounts);
+  const accountsView = useSelector((state) => state.routes.accounts);
+  const dispatch = useDispatch();
   const [addAccountModalOpen, setAddAccountModalOpen] = useState(false);
 
   useEffect(() => {
-    actions.fetchAccounts({
-      fromDate: accountsView.dateRange[0],
-      toDate: accountsView.dateRange[1],
-    });
-  }, [actions, accountsView.dateRange]);
+    dispatch(
+      actions.fetchAccounts({
+        fromDate: accountsView.dateRange[0],
+        toDate: accountsView.dateRange[1],
+      })
+    );
+  }, [dispatch, accountsView.dateRange]);
 
   const treeData = buildTreeBranch(null, accounts.byId);
 
-  const onSelectAccount = (selectedKeys, { selected }) => {
+  const onSelectAccount = (
+    selectedKeys: any[],
+    { selected }: { selected: boolean }
+  ) => {
     if (selected) {
-      actions.selectAccount({ id: selectedKeys[0] });
+      dispatch(viewActions.selectAccount({ id: selectedKeys[0] }));
     }
   };
 
-  const onSelectDateRange = (dates, dateStrings) => {
-    actions.selectDateRange([
-      dates[0].format("YYYY-MM-DD"),
-      dates[1].endOf("month").format("YYYY-MM-DD"),
-    ]);
+  const onSelectDateRange = (dates: any) => {
+    dispatch(
+      viewActions.selectDateRange([
+        dates[0].format("YYYY-MM-DD"),
+        dates[1].endOf("month").format("YYYY-MM-DD"),
+      ])
+    );
   };
 
-  const onDrop = (info) => {
+  // type DropInfo = NodeDragEventParams<HTMLDivElement> & {
+  //   dragNode: EventDataNode;
+  //   dragNodesKeys: React.ReactText[];
+  //   dropPosition: number;
+  //   dropToGap: boolean;
+  // };
+
+  const onDrop = (info: any) => {
     const account = accounts.byId[info.dragNode.key];
     let parentId;
     if (info.dropToGap) {
@@ -65,12 +96,16 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
     });
   };
 
+  const selectedKeys = accountsView.activeTabId
+    ? [accountsView.activeTabId]
+    : [];
+
   return (
     <div className="sidebar__container">
       <h2>Accounts</h2>
       <DatePicker.RangePicker
         picker="month"
-        value={accountsView.dateRange.map((val) => moment(val))}
+        value={accountsView.dateRange.map((val) => moment(val)) as any}
         onChange={onSelectDateRange}
       />
       <Tree
@@ -79,7 +114,7 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
         expandedKeys={Object.keys(accounts.byId)}
         blockNode
         showLine
-        selectedKeys={[accountsView.activeTabId]}
+        selectedKeys={selectedKeys}
         onSelect={onSelectAccount}
         draggable
         onDrop={onDrop}
@@ -96,15 +131,9 @@ const Sidebar = ({ accounts, accountsView, actions }) => {
       <AddAccountModal
         open={addAccountModalOpen}
         onClose={() => setAddAccountModalOpen(false)}
-        accounts={accounts}
-        actions={actions}
       />
     </div>
   );
-};
-
-Sidebar.propTypes = {
-  accounts: PropTypes.object.isRequired,
 };
 
 export default Sidebar;

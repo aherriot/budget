@@ -1,9 +1,8 @@
 import React from "react";
-// import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import "./Header.css";
 
-const Header = (props) => {
+const Header = () => {
   return (
     <div className="header__container">
       <Link to="/">
@@ -12,7 +11,5 @@ const Header = (props) => {
     </div>
   );
 };
-
-Header.propTypes = {};
 
 export default Header;

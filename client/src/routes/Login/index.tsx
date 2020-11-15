@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-// import PropTypes from "prop-types";
 
-const Login = (props) => {
+const Login = () => {
   const [val, setVal] = useState(0);
 
   return (
@@ -11,7 +10,5 @@ const Login = (props) => {
     </div>
   );
 };
-
-Login.propTypes = {};
 
 export default Login;

@@ -6,7 +6,7 @@ import store from "store";
 import "./App.css";
 
 import Accounts from "routes/Accounts";
-import BulkImport from "routes/BulkImport/container";
+import BulkImport from "routes/BulkImport";
 import Login from "routes/Login";
 
 function App() {

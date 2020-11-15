@@ -1,19 +1,34 @@
 import React from "react";
 import { Modal, Input, Select, Button } from "antd";
 import { useForm, Controller } from "react-hook-form";
-import AccountPicker from "components/AccountPicker";
+import { useDispatch } from "react-redux";
+import { renderAccountPicker } from "components/AccountPicker";
+import { AccountType } from "store/accounts";
+import actions from "store/actions";
 
-function AddAccountModal({ open, onClose, accounts, actions }) {
-  const { handleSubmit, control } = useForm();
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
 
-  const onSubmit = ({ parentId, type, name }) => {
+interface FormValues {
+  parentId: string;
+  type: AccountType;
+  name: string;
+}
+
+function AddAccountModal({ open, onClose }: Props) {
+  const dispatch = useDispatch();
+  const { handleSubmit, control } = useForm<FormValues>();
+
+  const onSubmit = ({ parentId, type, name }: FormValues) => {
     const account = {
       parentId: parentId[parentId.length - 1],
       type,
       name,
     };
 
-    actions.addAccount(account);
+    dispatch(actions.addAccount(account));
   };
 
   return (
@@ -23,8 +38,7 @@ function AddAccountModal({ open, onClose, accounts, actions }) {
           <Controller
             control={control}
             name="parentId"
-            as={AccountPicker}
-            accounts={accounts}
+            render={renderAccountPicker}
             rules={{ required: true }}
           />
         </div>

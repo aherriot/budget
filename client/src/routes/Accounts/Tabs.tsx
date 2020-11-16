@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Tabs as AntDTabs } from "antd";
+import { Tabs as AntDTabs, Empty } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import actions from "store/actions";
 import { actions as viewActions } from "./redux/slice";
@@ -38,7 +38,9 @@ const Tabs = () => {
 
   return (
     <div className="tabs__container">
-      {accountsView.openTabs.length === 0 && <p>Select a tab on the left.</p>}
+      {accountsView.openTabs.length === 0 && (
+        <Empty image={null} description="Select a tab on the left."></Empty>
+      )}
       <AntDTabs
         activeKey={accountsView.activeTabId as string}
         animated={false}

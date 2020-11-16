@@ -5,7 +5,7 @@ import moment, { Moment } from "moment";
 import { useForm, Controller } from "react-hook-form";
 
 import actions from "store/actions";
-import { renderAccountPicker } from "components/AccountPicker";
+import AccountPicker from "components/AccountPicker";
 
 interface FormValues {
   date: Moment;
@@ -55,16 +55,18 @@ const AddTransactionRow = () => {
               <Controller
                 control={control}
                 name="outAccount"
-                render={renderAccountPicker}
+                render={AccountPicker}
                 rules={{ required: true }}
+                defaultValue={null}
               />
             </td>
             <td className="ant-table-cell">
               <Controller
                 control={control}
                 name="inAccount"
-                render={renderAccountPicker}
+                render={AccountPicker}
                 rules={{ required: true }}
+                defaultValue={null}
               />
             </td>
             <td className="ant-table-cell">
@@ -74,6 +76,7 @@ const AddTransactionRow = () => {
                 as={Input}
                 placeholder="description"
                 rules={{ required: true }}
+                defaultValue=""
               />
             </td>
             <td className="ant-table-cell">
@@ -83,6 +86,7 @@ const AddTransactionRow = () => {
                 as={Input}
                 placeholder="amount"
                 rules={{ required: true }}
+                defaultValue=""
               />
             </td>
             <td className="ant-table-cell">

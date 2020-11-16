@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Input, Button, Cascader } from "antd";
+import { Input, Button } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import Header from "components/Header";
 import actions from "store/actions";
 import { AddTransactionArgs } from "store/transactions";
-import { Account } from "store/accounts";
+import AccountPicker from "components/AccountPicker";
 
 interface FormValues {
   csvData: string;
@@ -33,8 +33,6 @@ const BulkImport = () => {
     dispatch(actions.addTransactionsBulk(convertedData));
   };
 
-  const accountTreeData = buildAcountsTree(null, accounts.byId);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Header />
@@ -53,28 +51,13 @@ const BulkImport = () => {
         placeholder={
           "2020-03-14,Tim Horton's 123,,5.23\n2020-03-14,C/C Transfer,723.23"
         }
+        defaultValue=""
       />
       <Controller
         control={control}
         name="targetAccountId"
-        render={({ onChange, value, name }: any) => (
-          <Cascader
-            name={name}
-            onChange={onChange}
-            value={value}
-            changeOnSelect
-            displayRender={(val: string[]) => val[val.length - 1]}
-            showSearch={{
-              filter: (searchValue: string, path: any[]) => {
-                return !!(
-                  (path[path.length - 1].label as string).toLowerCase() ??
-                  null === searchValue.toLowerCase()
-                );
-              },
-            }}
-            options={accountTreeData}
-          />
-        )}
+        render={AccountPicker}
+        defaultValue={null}
       />
       <Button type="primary" htmlType="submit">
         Submit
@@ -136,30 +119,5 @@ const createTransaction = (
     outAccount: outAccount as string,
   };
 };
-
-interface TreeNode {
-  label: string;
-  value: string;
-  children: TreeNode[];
-}
-
-function buildAcountsTree(
-  parentId: string | null,
-  accountsById: Record<string, Account>
-) {
-  const children: TreeNode[] = [];
-  Object.values(accountsById).forEach((account) => {
-    if (account.parentId === parentId) {
-      children.push({
-        label: accountsById[account.id]?.name,
-        value: account.id,
-        children: buildAcountsTree(account.id, accountsById),
-      });
-    }
-  });
-  return children;
-}
-
-BulkImport.propTypes = {};
 
 export default BulkImport;

@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Input, Select, Button } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { renderAccountPicker } from "components/AccountPicker";
+import AccountPicker from "components/AccountPicker";
 import { AccountType } from "store/accounts";
 import actions from "store/actions";
 
@@ -38,8 +38,9 @@ function AddAccountModal({ open, onClose }: Props) {
           <Controller
             control={control}
             name="parentId"
-            render={renderAccountPicker}
+            render={AccountPicker}
             rules={{ required: true }}
+            defaultValue={null}
           />
         </div>
         <div>
@@ -65,6 +66,7 @@ function AddAccountModal({ open, onClose }: Props) {
             as={Input}
             placeholder="name"
             rules={{ required: true }}
+            defaultValue=""
           />
         </div>
         <div>

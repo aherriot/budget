@@ -6,7 +6,6 @@ import { Account } from "store/accounts";
 interface Props {
   value: any;
   onChange: () => void;
-  // onBlur: (e: any) => void;
 }
 
 const AccountPicker = ({ value, onChange }: Props) => {
@@ -16,8 +15,10 @@ const AccountPicker = ({ value, onChange }: Props) => {
     <Cascader
       showSearch={{
         filter,
+        matchInputWidth: false,
       }}
       // defaultValue={[options[0].value]}
+      allowClear={false}
       value={value}
       options={options}
       displayRender={displayRender}
@@ -26,18 +27,6 @@ const AccountPicker = ({ value, onChange }: Props) => {
     />
   );
 };
-
-interface Props2 {
-  value: any;
-  onChange: () => void;
-  onBlur: (e: any) => void;
-}
-
-const renderAccountPicker = ({ value, onChange, onBlur }: Props2) => {
-  return <AccountPicker value={value} onChange={onChange} />;
-};
-
-export { renderAccountPicker };
 
 export default AccountPicker;
 

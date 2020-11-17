@@ -4,6 +4,7 @@ import { Button, Table } from "antd";
 import moment from "moment";
 import actions from "store/actions";
 import AddTransactionRow from "./AddTransactionRow";
+import formatCurrency from "utils/formatCurrency";
 
 interface Props {
   accountId: string;
@@ -62,13 +63,13 @@ const TransactionsTable = ({ accountId, onSelectAccount }: Props) => {
             title: "Out",
             dataIndex: "outAmount",
             key: "outAmount",
-            render: (val) => (val == null ? "" : "$" + (val / 100).toFixed(2)),
+            render: (val) => (val == null ? "" : formatCurrency(val)),
           },
           {
             title: "In",
             dataIndex: "inAmount",
             key: "inAmount",
-            render: (val) => (val == null ? "" : "$" + (val / 100).toFixed(2)),
+            render: (val) => (val == null ? "" : formatCurrency(val)),
           },
           {
             title: "Actions",

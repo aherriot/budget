@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Tabs as AntDTabs, Empty } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import actions from "store/actions";
-import { actions as viewActions } from "./redux/slice";
+import { actions as viewActions } from "../redux/slice";
 import TabContent from "./TabContent";
 import "./Tabs.css";
 

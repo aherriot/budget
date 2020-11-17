@@ -6,6 +6,12 @@ import TransactionsChart from "./TransactionsChart";
 import AddTransactionDialog from "./AddTransactionDialog";
 
 import "./TabContent.css";
+import formatCurrency from "utils/formatCurrency";
+
+enum ViewType {
+  TABLE = "TABLE",
+  CHART = "CHART",
+}
 
 interface Props {
   accountId: string;
@@ -18,7 +24,7 @@ const TabContent = ({ accountId, onSelectAccount }: Props) => {
   const accounts = useSelector((state) => state.data.accounts);
   const transactions = useSelector((state) => state.data.transactions);
 
-  const [selectedView, setSelectedView] = useState("table");
+  const [selectedView, setSelectedView] = useState<ViewType>(ViewType.CHART);
   const [openDialog, setOpenDialog] = useState(false);
   return (
     <div>
@@ -29,8 +35,8 @@ const TabContent = ({ accountId, onSelectAccount }: Props) => {
             onChange={(e) => setSelectedView(e.target.value)}
             buttonStyle="solid"
           >
-            <Radio.Button value="table">Table</Radio.Button>
-            <Radio.Button value="chart">Chart</Radio.Button>
+            <Radio.Button value={ViewType.TABLE}>Table</Radio.Button>
+            <Radio.Button value={ViewType.CHART}>Chart</Radio.Button>
           </Radio.Group>
         </div>
         <Space>
@@ -38,23 +44,25 @@ const TabContent = ({ accountId, onSelectAccount }: Props) => {
             <b>Type:</b> {accounts.byId[accountId].type}
           </span>
           <span>
-            <b>Total:</b> $
-            {(
+            <b>Total:</b>
+            {formatCurrency(
               transactions.data.reduce(
                 (acc, val) => acc + val.inAmount - val.outAmount,
                 0
-              ) / 100
-            ).toFixed(2)}
+              )
+            )}
           </span>
         </Space>
       </div>
-      {selectedView === "table" && (
+      {selectedView === ViewType.TABLE && (
         <TransactionsTable
           accountId={accountId}
           onSelectAccount={onSelectAccount}
         />
       )}
-      {selectedView === "chart" && <TransactionsChart accountId={accountId} />}
+      {selectedView === ViewType.CHART && (
+        <TransactionsChart accountId={accountId} />
+      )}
       <AddTransactionDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

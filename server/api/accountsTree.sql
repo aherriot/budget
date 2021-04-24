@@ -84,4 +84,5 @@ from accounts_tree_totals
 group by accounts_tree_totals.id,
     accounts_tree_totals.parent_id,
     accounts_tree_totals.name,
-    accounts_tree_totals.type;
+    accounts_tree_totals.type
+order by name;

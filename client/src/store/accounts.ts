@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "store";
+import getAccountColor from "utils/getAccountColor";
 import request from "utils/request";
 
 export enum AccountType {
@@ -16,6 +17,8 @@ export interface Account {
   type: AccountType;
   name: string;
   total: number | null;
+  color: string | null;
+  children: Account[] | null;
 }
 
 interface FetchAccountsArgs {
@@ -23,14 +26,22 @@ interface FetchAccountsArgs {
   toDate: string;
 }
 
+export interface AccountTreeNode {
+  id: string;
+  children: AccountTreeNode[];
+}
 interface AccountsState {
   byId: Record<string, Account>;
+  byTree: AccountTreeNode[];
   parameters: FetchAccountsArgs | null;
   loading: boolean;
   error: boolean | any;
 }
 
-type FetchPayload = Record<string, Account>;
+interface FetchPayload {
+  byId: Record<string, Account>;
+  byTree: AccountTreeNode[];
+}
 
 const fetchAccounts = createAsyncThunk<
   FetchPayload,
@@ -52,14 +63,43 @@ const fetchAccounts = createAsyncThunk<
     toDate: new Date(toDate),
   });
 
-  return response.data.reduce(
-    (byId: Record<string, Account>, account: Account) => {
-      byId[account.id] = account;
-      return byId;
-    },
-    {}
-  );
+  const byId = {};
+
+  const byTree = buildTree(null, response.data, byId, { counter: 0 });
+
+  return { byId, byTree };
 });
+
+function buildTree(
+  parentId: string | null,
+  accounts: Account[],
+  byId: Record<string, Account>,
+  meta: { counter: number }
+) {
+  let childAccounts: Account[] = [];
+  accounts.forEach((account) => {
+    if (account.parentId === parentId) {
+      childAccounts.push(account);
+    }
+  });
+
+  childAccounts.sort((a, b) => b.name.localeCompare(b.name));
+  const children: AccountTreeNode[] = [];
+
+  childAccounts.forEach((account) => {
+    byId[account.id] = {
+      ...account,
+      color: getAccountColor(meta.counter, accounts.length),
+    };
+    meta.counter++;
+    children.push({
+      id: account.id,
+      children: buildTree(account.id, accounts, byId, meta),
+    });
+  });
+
+  return children;
+}
 
 interface UpdateAccountPayload {}
 
@@ -96,19 +136,21 @@ const addAccount = createAsyncThunk<
   { state: RootState }
 >(
   "transactions/addAccount",
-  async ({ parentId, type, name }: AddAccountArgs, thunkAPI) => {
-    const response = await request(`/api/accounts`, "POST", {
+  async ({ parentId, type, name }: AddAccountArgs, thunkAPI): Promise<any> => {
+    const response = await request(`/api/accounts2`, "POST", {
       parentId,
       type,
       name,
     });
-    thunkAPI.dispatch(fetchAccounts());
-    return response.data;
+    console.log("after request");
+    // thunkAPI.dispatch(fetchAccounts());
+    return Promise.resolve(response.data);
   }
 );
 
 const initialState: AccountsState = {
   byId: {},
+  byTree: [],
   parameters: null,
   loading: false,
   error: false,
@@ -126,7 +168,8 @@ const accounts = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAccounts.fulfilled, (state, action) => {
-      state.byId = action.payload;
+      state.byId = action.payload.byId;
+      state.byTree = action.payload.byTree;
       state.loading = false;
       state.error = false;
     });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Radio, Space } from "antd";
 import { useSelector } from "react-redux";
 import TransactionsTable from "./TransactionsTable";
@@ -26,6 +26,12 @@ const TabContent = ({ accountId, onSelectAccount }: Props) => {
 
   const [selectedView, setSelectedView] = useState<ViewType>(ViewType.CHART);
   const [openDialog, setOpenDialog] = useState(false);
+
+  useEffect(() => {
+    console.log("TabContent mounting");
+    return () => console.log("TabContent unmounting");
+  }, []);
+
   return (
     <div>
       <div className="TabContent--actions">

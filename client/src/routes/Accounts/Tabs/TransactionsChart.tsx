@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import Chart from "chart.js";
+import AddTransactionRow from "./AddTransactionRow";
 
 interface Props {
   accountId: string;
@@ -65,12 +66,8 @@ const TransactionsChart = ({ accountId }: Props) => {
             data: Object.values(amounts).map(
               (amount) => amount[accountId] / 100
             ),
-            backgroundColor: getColor(
-              index / Math.max(1, accountsAsArray.length - 1)
-            ),
-            hoverBackgroundColor: getColor(
-              index / Math.max(1, accountsAsArray.length - 1)
-            ),
+            backgroundColor: accounts.byId[accountId].color ?? "",
+            hoverBackgroundColor: accounts.byId[accountId].color ?? "",
           };
         }),
       },
@@ -98,26 +95,12 @@ const TransactionsChart = ({ accountId }: Props) => {
     };
   }, [accounts, accountsView.dateRange, transactions]);
 
-  return <canvas id="chart" ref={chartContextRef} />;
+  return (
+    <div>
+      <canvas id="chart" ref={chartContextRef} />
+      <AddTransactionRow />
+    </div>
+  );
 };
-
-/**
- *
- * @param val A number from 0 to 1
- * @return string hsl value that works well when paired with other outputs
- * If you pass invoke this with uniformly distributed values, it will give you a visually pleasing colour
- */
-function getColor(val: number): string {
-  // hue slowly rises towards 1
-  const hue = Math.floor(val * 200 + 200) % 360;
-
-  // saturation is a quadratic function that bottoms out in the middle
-  const saturation = 150 * ((val - 0.3) * (val - 0.3)) + 28;
-
-  // lightness slowly descends
-  const light = 60 - val * 10;
-
-  return `hsl(${hue}, ${saturation}%, ${light}%)`;
-}
 
 export default TransactionsChart;

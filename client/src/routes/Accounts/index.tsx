@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Header from "components/Header";
 import Tabs from "./Tabs";
@@ -7,6 +7,11 @@ import Sidebar from "./Sidebar";
 import "./Accounts.css";
 
 const Accounts = () => {
+  useEffect(() => {
+    console.log("AccountsView  mounting");
+    return () => console.log("Tabs unmounting");
+  }, []);
+
   return (
     <div className="accounts_container">
       <Header />

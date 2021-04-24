@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Account } from "store/accounts";
+import { Account, AccountTreeNode } from "store/accounts";
 import { Tree } from "antd";
 import TreeRow from "./TreeRow";
 import actions from "store/actions";
@@ -41,7 +41,7 @@ const AccountTree = () => {
     ? [accountsView.activeTabId]
     : [];
 
-  const treeData = buildTreeBranch(null, accounts.byId);
+  const treeData = buildTree(null, accounts.byId, accounts.byTree);
 
   return (
     <Tree
@@ -66,19 +66,18 @@ type TreeNode = {
   children: TreeNode[];
 };
 
-function buildTreeBranch(
+function buildTree(
   parentId: string | null,
-  accountsById: Record<string, Account>
+  accountsById: Record<string, Account>,
+  accountsByTree: AccountTreeNode[]
 ) {
   const children: TreeNode[] = [];
-  Object.values(accountsById).forEach((account) => {
-    if (account.parentId === parentId) {
-      children.push({
-        title: <TreeRow account={account} />,
-        key: account.id,
-        children: buildTreeBranch(account.id, accountsById),
-      });
-    }
+  accountsByTree.forEach((account) => {
+    children.push({
+      title: <TreeRow account={accountsById[account.id]} />,
+      key: account.id,
+      children: buildTree(account.id, accountsById, account.children),
+    });
   });
   return children;
 }

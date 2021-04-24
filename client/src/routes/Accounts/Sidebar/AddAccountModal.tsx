@@ -21,7 +21,7 @@ function AddAccountModal({ open, onClose }: Props) {
   const dispatch = useDispatch();
   const { handleSubmit, control } = useForm<FormValues>();
 
-  const onSubmit = ({ parentId, type, name }: FormValues) => {
+  const onSubmit = async ({ parentId, type, name }: FormValues) => {
     const account = {
       parentId: parentId[parentId.length - 1],
       type,

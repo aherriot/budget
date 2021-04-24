@@ -16,6 +16,7 @@ const AccountPicker = ({ value, onChange }: Props) => {
       showSearch={{
         filter,
         matchInputWidth: false,
+        render: renderOption,
       }}
       // defaultValue={[options[0].value]}
       allowClear={false}
@@ -32,6 +33,10 @@ export default AccountPicker;
 
 function displayRender(val: string[]) {
   return val[val.length - 1];
+}
+
+function renderOption(inputValue: string, path: any[]): React.ReactNode {
+  return <div>{path[path.length - 1].label}</div>;
 }
 
 function filter(searchValue: string, path: any[]) {

@@ -12,7 +12,7 @@ type FetchTransactionsPayload = Transaction[];
 
 const fetchTransactions = createAsyncThunk<
   FetchTransactionsPayload,
-  FetchTransactionsArgs,
+  FetchTransactionsArgs | void,
   { state: RootState }
 >("transactions/fetchTransactions", async (args, thunkAPI) => {
   let fromDate, toDate, accountId;
@@ -51,6 +51,7 @@ const addTransaction = createAsyncThunk<
     transaction,
   });
   thunkAPI.dispatch(accountsActions.fetchAccounts());
+  thunkAPI.dispatch(fetchTransactions());
   return response.data;
 });
 
@@ -74,6 +75,7 @@ const updateTransaction = createAsyncThunk<
     transaction,
   });
   thunkAPI.dispatch(accountsActions.fetchAccounts());
+  thunkAPI.dispatch(fetchTransactions());
   return response.data;
 });
 
@@ -87,6 +89,7 @@ const deleteTransaction = createAsyncThunk<
     "DELETE"
   );
   thunkAPI.dispatch(accountsActions.fetchAccounts());
+  thunkAPI.dispatch(fetchTransactions());
   return response.data;
 });
 

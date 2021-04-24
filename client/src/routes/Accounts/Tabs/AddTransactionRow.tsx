@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { Input, DatePicker, Button } from "antd";
+import { Input, InputNumber, DatePicker, Button } from "antd";
 import moment, { Moment } from "moment";
 import { useForm, Controller } from "react-hook-form";
 
@@ -12,7 +12,7 @@ interface FormValues {
   inAccount: string[];
   outAccount: string[];
   description: string;
-  amount: string;
+  amount: number;
 }
 
 const AddTransactionRow = () => {
@@ -32,7 +32,7 @@ const AddTransactionRow = () => {
       inAccount: inAccount[inAccount.length - 1],
       outAccount: outAccount[outAccount.length - 1],
       description,
-      amount: parseInt(amount, 10),
+      amount: amount * 100,
     };
     dispatch(actions.addTransaction(transaction));
   };
@@ -83,10 +83,16 @@ const AddTransactionRow = () => {
               <Controller
                 control={control}
                 name="amount"
-                as={Input}
+                as={InputNumber}
+                formatter={(value: number | string | undefined) =>
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value: string | undefined) =>
+                  value?.replace(/\$\s?|(,*)/g, "") ?? 0
+                }
                 placeholder="amount"
                 rules={{ required: true }}
-                defaultValue=""
+                defaultValue={null}
               />
             </td>
             <td className="ant-table-cell">

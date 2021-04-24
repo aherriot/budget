@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Table } from "antd";
+import { Button, Table, Input } from "antd";
 import moment from "moment";
 import actions from "store/actions";
 import AddTransactionRow from "./AddTransactionRow";
 import formatCurrency from "utils/formatCurrency";
+import ColorDot from "components/ColorDot";
 
 interface Props {
   accountId: string;
@@ -15,9 +16,23 @@ const TransactionsTable = ({ accountId, onSelectAccount }: Props) => {
   const dispatch = useDispatch();
   const accounts = useSelector((state) => state.data.accounts);
   const transactions = useSelector((state) => state.data.transactions);
+  const [filterText, setFilterText] = useState("");
 
+  const filteredTransactions = transactions.data.filter((t) => {
+    const filter = filterText.toLowerCase();
+    return (
+      t.description.toLowerCase().includes(filter) ||
+      accounts.byId[t.inAccount].name.toLowerCase().includes(filter) ||
+      accounts.byId[t.outAccount].name.toLowerCase().includes(filter)
+    );
+  });
   return (
     <div>
+      <Input
+        type="text"
+        value={filterText}
+        onChange={(e) => setFilterText(e.target.value)}
+      />
       <Table
         size="small"
         pagination={false}
@@ -39,7 +54,11 @@ const TransactionsTable = ({ accountId, onSelectAccount }: Props) => {
             dataIndex: "outAccount",
             key: "outAccount",
             render: (val) => (
-              <span onClick={() => onSelectAccount(val)}>
+              <span
+                className="account-table-cell"
+                onClick={() => onSelectAccount(val)}
+              >
+                <ColorDot color={accounts.byId[val]?.color as string} />
                 {accounts.byId[val]?.name}
               </span>
             ),
@@ -49,7 +68,11 @@ const TransactionsTable = ({ accountId, onSelectAccount }: Props) => {
             dataIndex: "inAccount",
             key: "inAccount",
             render: (val) => (
-              <span onClick={() => onSelectAccount(val)}>
+              <span
+                className="account-table-cell"
+                onClick={() => onSelectAccount(val)}
+              >
+                <ColorDot color={accounts.byId[val]?.color as string} />
                 {accounts.byId[val]?.name}
               </span>
             ),
@@ -89,7 +112,7 @@ const TransactionsTable = ({ accountId, onSelectAccount }: Props) => {
             ),
           },
         ]}
-        dataSource={transactions.data}
+        dataSource={filteredTransactions}
       />
       <AddTransactionRow />
     </div>
